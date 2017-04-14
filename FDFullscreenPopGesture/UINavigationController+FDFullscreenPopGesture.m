@@ -44,10 +44,15 @@
         return NO;
     }
     
-    // Ignore when the beginning location is beyond max allowed initial distance to left edge.
     CGPoint beginningLocation = [gestureRecognizer locationInView:gestureRecognizer.view];
-    CGFloat maxAllowedInitialDistance = topViewController.fd_interactivePopMaxAllowedInitialDistanceToLeftEdge;
-    if (maxAllowedInitialDistance > 0 && beginningLocation.x > maxAllowedInitialDistance) {
+    // Ignore when the beginning location is beyond max allowed initial distance to left edge.
+    CGFloat maxAllowedInitialDistanceLeft = topViewController.fd_interactivePopMaxAllowedInitialDistanceToLeftEdge;
+    if (maxAllowedInitialDistanceLeft > 0 && beginningLocation.x > maxAllowedInitialDistanceLeft) {
+        return NO;
+    }
+    // Ignore when the beginning location is beyond max allowed initial distance to top edge.
+    CGFloat maxAllowedInitialDistanceTop = topViewController.fd_interactivePopMaxAllowedInitialDistanceToLeftEdge;
+    if (maxAllowedInitialDistanceTop > 0 && beginningLocation.y < maxAllowedInitialDistanceTop) {
         return NO;
     }
 
@@ -274,6 +279,21 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
 - (void)setFd_interactivePopMaxAllowedInitialDistanceToLeftEdge:(CGFloat)distance
 {
     SEL key = @selector(fd_interactivePopMaxAllowedInitialDistanceToLeftEdge);
+    objc_setAssociatedObject(self, key, @(MAX(0, distance)), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (CGFloat)fd_interactivePopMaxAllowedInitialDistanceToTopEdge
+{
+#if CGFLOAT_IS_DOUBLE
+    return [objc_getAssociatedObject(self, _cmd) doubleValue];
+#else
+    return [objc_getAssociatedObject(self, _cmd) floatValue];
+#endif
+}
+
+- (void)setFd_interactivePopMaxAllowedInitialDistanceToTopEdge:(CGFloat)distance
+{
+    SEL key = @selector(fd_interactivePopMaxAllowedInitialDistanceToTopEdge);
     objc_setAssociatedObject(self, key, @(MAX(0, distance)), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
